@@ -1,5 +1,6 @@
 #include <iostream>
 #include <math.h>
+#include <vector>
 using namespace std;
 
 bool isPrime(int n) {
@@ -10,22 +11,57 @@ bool isPrime(int n) {
     return true;
 }
 
-int main() {
-
-    int p = 1;
-    int prime = 2;
-
-    for (int i=3; ; i++) {
-        if (isPrime(i))
+vector<int> getPrimes(int nr_of_primes) {
+    vector<int> primes;
+    primes.push_back(1);
+    primes.push_back(2);
+    int p = 2;
+    for (int i=3; p < nr_of_primes; i++) {
+        if (isPrime(i)) {
             p++;
+            primes.push_back(i);
+        }
+    }
+    return primes;
+}
 
-        if (p >= 10001) {
-            prime = i;
-            break;
+int getDivisors(int s, vector<int> &primes) {
+
+    int* divisors = new int[primes.size()]();
+
+    for (int i=1; i < primes.size(); i++) {
+        int s2 = s;
+        while (s2 > 0 && s2 % primes[i] == 0) {
+            divisors[i]++;
+            s2 /= primes[i];
         }
     }
 
-    cout << prime << endl;
+    int d = 1;
+
+    for (int i=0; i < primes.size(); i++) {
+        d *= (divisors[i] + 1);
+    }
+
+    return d;
+}
+
+int main() {
+
+    vector<int> primes = getPrimes(500);
+
+    int s = 0;
+    int n = 0;
+    int d = 0;
+
+    while (d < 500) {
+        n++;
+        s += n;
+
+        d = getDivisors(s, primes);
+    }
+
+    cout << s << endl;
 
     return 0;
 }
